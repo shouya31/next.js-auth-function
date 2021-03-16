@@ -61,7 +61,11 @@ export const AuthProvider = ({ children }: any) => {
       const { user } = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-      if (user === null) return;
+      if (user) {
+        alert("新規登録が成功しました！")
+        router.push('/')
+      }
+      return user;
       // ④user情報からidTokenを取り出して、cookieに保存する
     } catch (e) {
       const { code } = e;

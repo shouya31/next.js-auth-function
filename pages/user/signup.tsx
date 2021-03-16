@@ -4,23 +4,23 @@ import { useUser } from '../../hooks/userContext';
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function SigninPage() {
+export default function SignupPage() {
   const { register, handleSubmit, errors } = useForm();
-  const { login } = useUser();
+  const { signup } = useUser()
   const router = useRouter();
 
   const onSubmit = async (data: { email: string; password: string; }) => {
-    const user = (await login(data.email, data.password))
+    const user = await signup(data.email, data.password);
     if (user) {
+      alert("新規登録が成功しました！")
       router.push('/')
     }
   };
 
   return (
     <div>
-      <header
-      >
-        <h6>サインイン</h6>
+      <header>
+        <h6>登録</h6>
       </header>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -63,12 +63,11 @@ export default function SigninPage() {
           サインインする
         </button>
       </form>
-      <Link href="/signup">
+      <Link href="/signin">
         <a href="">
-          登録はこちらから
+          サインインはこちらから
         </a>
       </Link>
     </div>
   )
 };
-
