@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from '../../hooks/userContext';
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Unauthenticated } from '../../hooks/Authenticated';
 
-export default function SignupPage() {
+export function SignupPage() {
   const { register, handleSubmit, errors } = useForm();
   const { signup } = useUser()
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data: { email: string; password: string; }) => {
+    setIsLoading(true);
     const user = await signup(data.email, data.password);
+    setIsLoading(false)
     if (user) {
       alert("新規登録が成功しました！")
       router.push('/')
@@ -71,3 +75,4 @@ export default function SignupPage() {
     </div>
   )
 };
+export default Unauthenticated(SignupPage);

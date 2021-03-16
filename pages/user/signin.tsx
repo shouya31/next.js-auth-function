@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from '../../hooks/userContext';
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Unauthenticated } from '../../hooks/Authenticated';
 
-export default function SigninPage() {
+export function SigninPage() {
   const { register, handleSubmit, errors } = useForm();
   const { login } = useUser();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data: { email: string; password: string; }) => {
+    setIsLoading(true);
     const user = (await login(data.email, data.password))
+    setIsLoading(false);
     if (user) {
+      alert("ログインが成功しました！")
       router.push('/')
     }
   };
@@ -59,7 +64,7 @@ export default function SigninPage() {
             <span className="sub red">パスワードを入力してください。</span>
           )}
         </div>
-        <button type="submit">
+        <button type="submit" disabled={isLoading}>
           サインインする
         </button>
       </form>
@@ -72,3 +77,4 @@ export default function SigninPage() {
   )
 };
 
+export default Unauthenticated(SigninPage);

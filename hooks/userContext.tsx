@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 
 interface UserContextProps {
   user: firebase.User;
+  userLoading: boolean;
   login: any;
   signup: any;
   signout: any;
@@ -20,6 +21,7 @@ export const UserContext = createContext({} as UserContextProps);
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState({} as firebase.User);
+  const [userLoading, setUserLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -38,6 +40,7 @@ export const AuthProvider = ({ children }: any) => {
         nookies.destroy(undefined, 'authToken')
         nookies.set(undefined, 'authToken', '', {});
       }
+      setUserLoading(false);
     });
   }, []);
 
@@ -61,10 +64,6 @@ export const AuthProvider = ({ children }: any) => {
       const { user } = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-      if (user) {
-        alert("新規登録が成功しました！")
-        router.push('/')
-      }
       return user;
       // ④user情報からidTokenを取り出して、cookieに保存する
     } catch (e) {
@@ -100,6 +99,7 @@ export const AuthProvider = ({ children }: any) => {
     <UserContext.Provider
       value={{
         user,
+        userLoading,
         login: login,
         signup: signup,
         signout: signout
