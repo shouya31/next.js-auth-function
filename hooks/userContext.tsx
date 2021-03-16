@@ -7,6 +7,7 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 import { firebase } from "../firebaseClient";
 import nookies from "nookies";
 import { useRouter } from "next/router";
+import { createUser } from "../api"
 
 interface UserContextProps {
   user: firebase.User;
@@ -45,7 +46,7 @@ export const AuthProvider = ({ children }: any) => {
   }, []);
 
   // ユーザーをログインさせる関数
-  const login = async (email: any, password: any) => {
+  const login = async (email: String, password: String) => {
     try {
       // ①ユーザーが入力した emailとpasswordを Firebaseに送る
       // ②emailとpasswordを検証する（firebase側）
@@ -57,14 +58,16 @@ export const AuthProvider = ({ children }: any) => {
   }
 
   // 新しいユーザーを作成しログインさせる関数
-  const signup = async (email: any, password: any) => {
+  const signup = async (email: String, password: String, name: String) => {
     try {
       // ①ユーザーが入力した emailとpasswordを Firebaseに送る
       // ②emailとpasswordを保存する（firebase側）
       const { user } = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-      return user;
+        if (user === null) return;
+        const idToken = await user.getIdToken();
+        return await createUser(name ,idToken)
       // ④user情報からidTokenを取り出して、cookieに保存する
     } catch (e) {
       const { code } = e;
