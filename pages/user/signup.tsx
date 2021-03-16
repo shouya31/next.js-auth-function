@@ -11,9 +11,9 @@ export function SignupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = async (data: { email: string; password: string; }) => {
+  const onSubmit = async (data: { email: string; password: string; name: string}) => {
     setIsLoading(true);
-    const user = await signup(data.email, data.password);
+    const user = await signup(data.email, data.password, data.name);
     setIsLoading(false)
     if (user) {
       alert("新規登録が成功しました！")
@@ -28,6 +28,24 @@ export function SignupPage() {
       </header>
 
       <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="FormControll">
+          <label htmlFor="" className="FormLabel">
+            ユーザー名
+          </label>
+          <input
+            type="name"
+            name="name"
+            className="FormTextInput"
+            placeholder="田中太郎"
+            ref={register({
+              required: true,
+            })}
+          />
+          {errors.email && (
+            <span className="sub red">メールアドレスを入力してください。</span>
+          )}
+        </div>
+
         <div className="FormControll">
           <label htmlFor="" className="FormLabel">
             メールアドレス
